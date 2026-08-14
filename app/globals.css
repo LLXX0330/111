@@ -1,3 +1,8 @@
-@import url('https://fonts.googleapis.com/css?family=DM+Sans:500,400');
 @import "tailwindcss";
-*{box-sizing:border-box}html{scroll-behavior:smooth;background:#fff}body{margin:0;background:#fff;color:#000}button{font:inherit;cursor:pointer}::selection{background:#000;color:#fff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:#050608;color-scheme:dark}
+body{margin:0;overflow-x:hidden;background:#050608;color:#000;font-family:Arial,"PingFang SC","Microsoft YaHei",sans-serif}
+button{font:inherit;cursor:pointer}
+::selection{background:#000;color:#fff}
+.blur-3xl{filter:none!important}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,::before,::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
