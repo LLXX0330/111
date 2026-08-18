@@ -5,13 +5,14 @@ import { motion, useInView, useMotionValue, useScroll, useSpring, useTransform }
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const asset=(path:string)=>`${(import.meta.env.BASE_URL||"/").replace(/\/$/,"")}${path}`;
-type ProjectId = "sweet" | "void" | "visual" | "story" | "changan" | "h5" | "banner";
+type ProjectId = "sweet" | "void" | "visual" | "story" | "comic" | "changan" | "h5" | "banner";
 type Square = [number, number, number];
 const projects: {id:ProjectId;title:string;category:string;year:string;image:string;pages:[number,number];squares:Square[]}[]=[
   {id:"sweet",title:"甜叙",category:"烘焙品牌全案视觉设计",year:"2026",image:asset("/portfolio/cover-portfolio-05.webp"),pages:[4,27],squares:[[82,55,16],[88,68,10],[78,72,7],[85,42,6],[90,80,8]]},
   {id:"void",title:"VOID LAB 空域实验室",category:"未来户外机能品牌视觉系统",year:"2026",image:asset("/portfolio/cover-portfolio-29.webp"),pages:[28,56],squares:[[67,16,10],[76,26,6],[87,36,8],[72,70,12],[84,80,7],[92,60,5]]},
   {id:"visual",title:"主题海报",category:"活动与商业视觉设计",year:"2026",image:asset("/portfolio/cover-poster-esports.webp"),pages:[57,60],squares:[[82,26,14],[88,38,10],[78,44,7],[84,54,5],[90,60,8]]},
   {id:"story",title:"朔风孤城",category:"AI 漫剧角色系统化设计",year:"2026",image:asset("/portfolio/cover-portfolio-62.webp"),pages:[61,68],squares:[[68,16,9],[78,28,6],[88,42,8],[76,72,10],[90,82,6]]},
+  {id:"comic",title:"漫剧创作",category:"剧集、角色与分镜素材库",year:"持续更新",image:asset("/portfolio/story-cover.png"),pages:[61,68],squares:[[9,20,7],[16,33,4],[84,20,8],[90,40,5],[80,78,7]]},
   {id:"changan",title:"长安天阙录",category:"古风游戏场景视觉设计",year:"2026",image:asset("/portfolio/changan-final/00-cover.webp"),pages:[69,78],squares:[[8,20,9],[14,36,5],[84,24,10],[90,50,6],[78,78,8]]},
   {id:"h5",title:"边界觉醒",category:"游戏 H5 移动端活动视觉设计",year:"2026",image:asset("/portfolio/cover-h5-horizontal-cover.webp"),pages:[73,73],squares:[[78,18,10],[88,31,6],[82,48,8],[91,67,5],[75,80,11]]},
   {id:"banner",title:"安全科普 Banner",category:"主题化视觉延展",year:"2026",image:asset("/portfolio/cover-banner-color-2.webp"),pages:[74,76],squares:[[6,20,9],[12,34,5],[84,22,10],[90,44,6],[78,76,8]]},
@@ -29,11 +30,11 @@ const changanDetailImages=[
   {src:"/portfolio/changan-final/09-west-market.webp",title:"西市万商"},
 ];
 const floaters:Square[]=[[6,20,12],[12,32,8],[8,44,6],[88,18,10],[92,30,14],[85,42,7],[90,52,5],[14,56,5]];
-const logos=["甜叙","VOID LAB","主题海报","朔风孤城","长安天阙录","游戏 H5","安全科普 Banner"];
+const logos=["甜叙","VOID LAB","主题海报","朔风孤城","漫剧创作","长安天阙录","游戏 H5","安全科普 Banner"];
 
 function FloatingSquare({square,index,progress}:{square:Square;index:number;progress:any}){const raw=useTransform(progress,[0,1],[0,-(80+index*30)]);const y=useSpring(raw,{stiffness:40,damping:20});return <motion.i className="absolute block bg-black" style={{left:`${square[0]}%`,top:`${square[1]}%`,width:square[2],height:square[2],y}} animate={{translateY:[0,-10,0]}} transition={{duration:3+index*.4,ease:"easeInOut",repeat:Infinity,delay:index*.3}}/>}
 function ProjectCard({project,onOpen}:{project:(typeof projects)[number];index:number;onOpen:(id:ProjectId)=>void}){
-  const portraitCover=project.id==="visual";
+  const portraitCover=project.id==="visual"||project.id==="comic";
   return <article className="project-card group relative isolate aspect-video cursor-pointer overflow-hidden bg-black shadow-[0_10px_35px_rgba(0,0,0,.08)]" onClick={()=>onOpen(project.id)}>
     {portraitCover&&<><img loading="lazy" decoding="async" className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35" src={project.image} alt="" aria-hidden="true"/><div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/45 via-black/10 to-black/45"/></>}
     <img loading="lazy" decoding="async" className={`project-card__image absolute inset-0 h-full w-full ${portraitCover?"object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,.45)]":"object-cover"}`} src={project.image} alt={project.title}/>
@@ -82,7 +83,31 @@ export default function Home(){
 }
 
 function ProjectDetail({id,onClose}:{id:ProjectId;onClose:()=>void}){
-  return id==="h5"?<H5ProjectDetail onClose={onClose}/>:<StandardProjectDetail id={id} onClose={onClose}/>;
+  if(id==="h5")return <H5ProjectDetail onClose={onClose}/>;
+  if(id==="comic")return <ComicHubDetail onClose={onClose}/>;
+  return <StandardProjectDetail id={id} onClose={onClose}/>;
+}
+
+const comicChannels=[
+  {key:"episodes",index:"01",title:"剧集成片",en:"EPISODES",copy:"用于展示完整漫剧、预告片与章节更新。",status:"等待首部作品"},
+  {key:"characters",index:"02",title:"角色设定",en:"CHARACTERS",copy:"集中整理人物立绘、表情、服装与角色关系。",status:"可持续扩充"},
+  {key:"boards",index:"03",title:"分镜场景",en:"STORYBOARDS",copy:"展示关键分镜、场景气氛与镜头叙事过程。",status:"可持续扩充"},
+] as const;
+
+function ComicHubDetail({onClose}:{onClose:()=>void}){
+  const [active,setActive]=useState<(typeof comicChannels)[number]["key"]>("episodes");
+  const current=comicChannels.find(item=>item.key===active)!;
+  return <motion.div className="fixed inset-0 z-50 overflow-y-auto bg-[#050608] text-white" role="dialog" aria-modal="true" aria-label="漫剧创作素材库" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-[#050608]/90 px-5 py-4 backdrop-blur-xl sm:px-9"><div className="mx-auto flex max-w-7xl items-center justify-between"><div className="flex min-w-0 items-center gap-3"><motion.i className="h-2 w-2 shrink-0 rounded-full bg-[#8affd8] shadow-[0_0_16px_#8affd8]" animate={{opacity:[.35,1,.35]}} transition={{duration:1.8,repeat:Infinity}}/><div><p className="text-[9px] uppercase tracking-[.24em] text-white/35">AI COMIC ARCHIVE / 2026</p><h2 className="truncate text-lg font-medium sm:text-xl">漫剧创作素材库</h2></div></div><motion.button className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white/75" whileHover={{rotate:90,backgroundColor:"#fff",color:"#000"}} whileTap={{scale:.9}} onClick={onClose} aria-label="关闭漫剧板块">×</motion.button></div></header>
+    <main className="mx-auto max-w-7xl px-5 pb-16 pt-5 sm:px-9 sm:pt-9">
+      <section className="relative grid min-h-[68vh] overflow-hidden border border-white/10 bg-[#0a0d10] lg:grid-cols-[1.05fr_.95fr]">
+        <div className="relative min-h-[48vh] overflow-hidden lg:min-h-full"><img className="absolute inset-0 h-full w-full scale-110 object-cover opacity-25 blur-2xl" src={asset("/portfolio/story-cover.png")} alt="" aria-hidden="true"/><img className="absolute inset-0 h-full w-full object-contain" src={asset("/portfolio/story-cover.png")} alt="漫剧创作封面"/><div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#0a0d10]"/><div className="absolute inset-5 border border-white/10"><i className="absolute -left-px -top-px h-8 w-8 border-l border-t border-[#8affd8]/60"/><i className="absolute -bottom-px -right-px h-8 w-8 border-b border-r border-[#8affd8]/60"/></div></div>
+        <div className="relative flex flex-col justify-between p-7 sm:p-10 lg:p-12"><div><p className="text-[10px] uppercase tracking-[.28em] text-[#8affd8]/70">NEW CONTENT CHANNEL</p><h1 className="mt-5 text-[clamp(3.2rem,6vw,6.5rem)] font-light leading-[.9] tracking-[-.06em]">漫剧<br/><span className="text-white/28">COMIC SERIES</span></h1><p className="mt-7 max-w-md text-sm leading-7 text-white/55">这里将持续收录你的漫剧成片、人物设定、分镜与场景素材，形成独立于商业视觉项目之外的连载作品档案。</p></div><div className="mt-12 flex items-center justify-between border-t border-white/10 pt-5 text-[10px] uppercase tracking-[.2em] text-white/35"><span>Archive Ready</span><span className="flex items-center gap-2"><i className="h-1.5 w-1.5 rounded-full bg-[#8affd8]"/>持续更新</span></div></div>
+      </section>
+      <section className="mt-5 grid gap-3 md:grid-cols-3">{comicChannels.map(item=><motion.button key={item.key} onClick={()=>setActive(item.key)} className={`group relative min-h-48 overflow-hidden border p-6 text-left transition-colors ${active===item.key?"border-[#8affd8]/55 bg-[#101715]":"border-white/10 bg-white/[.025] hover:border-white/25"}`} whileHover={{y:-3}} whileTap={{scale:.985}} aria-pressed={active===item.key}><span className="text-[10px] tracking-[.2em] text-white/30">{item.index} / {item.en}</span><h3 className="mt-8 text-2xl font-normal">{item.title}</h3><p className="mt-3 max-w-xs text-xs leading-6 text-white/45">{item.copy}</p><i className={`absolute bottom-0 left-0 h-0.5 bg-[#8affd8] transition-all duration-500 ${active===item.key?"w-full":"w-0 group-hover:w-1/3"}`}/></motion.button>)}</section>
+      <motion.section key={active} className="mt-3 grid min-h-72 place-items-center overflow-hidden border border-white/10 bg-white/[.025] px-6 py-14 text-center" initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} transition={{duration:.4,ease}}><div><span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-white/15 text-xl text-[#8affd8]">+</span><p className="mt-5 text-[10px] uppercase tracking-[.25em] text-white/30">{current.en} / CONTENT SLOT</p><h3 className="mt-3 text-2xl font-normal">{current.status}</h3><p className="mx-auto mt-3 max-w-md text-sm leading-7 text-white/42">后续素材会在这里按作品与章节排列，封面用于浏览，点开后查看完整内容。</p></div></motion.section>
+    </main>
+  </motion.div>;
 }
 
 function H5ProjectDetail({onClose}:{onClose:()=>void}){
@@ -93,7 +118,7 @@ function H5ProjectDetail({onClose}:{onClose:()=>void}){
   <motion.section className="border-x border-b border-white/10 bg-black px-5 py-7 text-white sm:px-9" initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:"-80px"}} transition={{duration:.7,ease}}><div className="mb-6 flex items-end justify-between border-b border-white/10 pb-5"><div><p className="text-[10px] uppercase tracking-[.22em] text-white/35">Complete H5 Design</p><h3 className="mt-2 text-2xl font-normal">完整活动长页</h3></div><span className="text-xs text-white/35">SCROLL ↓</span></div><motion.div className="mx-auto max-w-[725px] overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,.55)]" initial={{opacity:0,y:35}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:"-100px"}} transition={{duration:.8,ease}}><img className="block h-auto w-full" src={asset("/portfolio/game-h5.png")} alt="边界觉醒完整 H5 活动页面"/></motion.div></motion.section></div></motion.div>;
 }
 
-function StandardProjectDetail({id,onClose}:{id:Exclude<ProjectId,"h5">;onClose:()=>void}){
+function StandardProjectDetail({id,onClose}:{id:Exclude<ProjectId,"h5"|"comic">;onClose:()=>void}){
   const p=projects.find(x=>x.id===id)!;
   const pageNumbers=Array.from({length:p.pages[1]-p.pages[0]+1},(_,i)=>p.pages[0]+i);
   const detailImages=id==="changan"?changanDetailImages:pageNumbers.map((page,i)=>({src:`/portfolio/pdf-pages/portfolio-${String(page).padStart(2,'0')}.jpg`,title:`正式作品集页面 ${i+1}`}));
