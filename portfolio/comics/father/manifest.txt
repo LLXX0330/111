@@ -1,0 +1,10 @@
+characters/01.webp	父亲三视图
+characters/02.webp	父亲面部身份参考
+characters/03.webp	儿子双阶段三视图
+characters/04.webp	儿子面部身份参考
+characters/05.webp	母亲三视图
+characters/06.webp	母亲面部身份参考
+scenes/01.webp	旧家客厅
+scenes/02.webp	雨夜校门
+scenes/03.webp	大学宿舍
+scenes/04.webp	餐馆

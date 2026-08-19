@@ -1,0 +1,8 @@
+characters/01.webp	墓园管理员三视图
+characters/02.webp	老张三视图
+characters/03.webp	大黄四视图
+scenes/01.webp	秋日墓园
+scenes/02.webp	雪夜江桥
+scenes/03.webp	海边小院
+scenes/04.webp	病中卧室
+scenes/05.webp	冬日墓园

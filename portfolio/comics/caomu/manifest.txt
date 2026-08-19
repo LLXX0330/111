@@ -1,0 +1,13 @@
+characters/01.webp	弟弟
+characters/02.webp	新郎
+characters/03.webp	奶奶 · 三视图
+characters/04.webp	小草 · 15岁 · 三视图
+characters/05.webp	小草 · 8岁 · 三视图
+characters/06.webp	小草 · 成年 · 三视图
+characters/07.webp	母亲 · 三视图
+characters/08.webp	父亲 · 三视图
+scenes/01.webp	S00 · 1990年乡镇医院产房
+scenes/02.webp	S01 · 贫困农屋
+scenes/03.webp	S02 · 乡村路口
+scenes/04.webp	S03 · 工厂宿舍
+scenes/05.webp	S04 · 农村婚宴

@@ -1,0 +1,8 @@
+characters/01.webp	女主
+characters/02.webp	女主面部
+characters/03.webp	局长
+characters/04.webp	男主
+scenes/01.webp	场景1
+scenes/02.webp	场景2
+scenes/03.webp	场景3
+scenes/04.webp	场景4
